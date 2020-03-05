@@ -30,6 +30,7 @@
                 <th>State</th>
                 <th>Total Cases Reported</th>
                 <th>Changes since yesterday</th>
+                <th>% of total</th>
             </tr>
         </thead>
         <tbody>
@@ -38,6 +39,7 @@
                 <td th:text="${locationStat.state}">-</td>
                 <td th:text="${locationStat.newestTotalCases}">0</td>
                 <td th:text="${locationStat.deltaPreviousDay}"></td>
+                <td th:text="${#numbers.formatDecimal(locationStat.getPercentageOfTotal(), 0, 'COMMA', 4, 'POINT')}"></td>
             </tr>
         </tbody>
     </table>

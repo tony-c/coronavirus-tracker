@@ -5,6 +5,7 @@ public class LocationStats {
     private String country;
     private int newestTotalCases;
     private int deltaPreviousDay;
+    private double percentageOfTotal;
 
     public String getState() {
         return state;
@@ -37,6 +38,10 @@ public class LocationStats {
     public void setDeltaPreviousDay(int deltaPreviousDay) {
         this.deltaPreviousDay = deltaPreviousDay;
     }
+
+    public double getPercentageOfTotal() { return percentageOfTotal; }
+
+    public void setPercentageOfTotal(double percentageOfTotal) { this.percentageOfTotal = percentageOfTotal; }
 
     @Override
     public String toString() {
