@@ -20,7 +20,7 @@ public class HomeController {
         List<LocationStats> allStats = coronaVirusDataService.getAllStats();
 
         int totalReportedCases = coronaVirusDataService.getTotalCases();
-        int totalNewCases = coronaVirusDataService.getTotalPreviousDaysCases();
+        int totalNewCases = totalReportedCases - coronaVirusDataService.getTotalPreviousDaysCases();
 
         model.addAttribute("locationStats", allStats);
         model.addAttribute("totalReportedCases", totalReportedCases);
