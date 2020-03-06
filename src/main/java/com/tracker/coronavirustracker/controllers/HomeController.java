@@ -12,8 +12,12 @@ import java.util.List;
 @Controller
 public class HomeController {
 
+    private final CoronaVirusDataService coronaVirusDataService;
+
     @Autowired
-    CoronaVirusDataService coronaVirusDataService;
+    public HomeController(CoronaVirusDataService coronaVirusDataService) {
+        this.coronaVirusDataService = coronaVirusDataService;
+    }
 
     @GetMapping("/")
     public String home(Model model) {
