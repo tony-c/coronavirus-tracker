@@ -1,6 +1,7 @@
 package com.tracker.coronavirustracker.services;
 
 import com.tracker.coronavirustracker.models.LocationStats;
+import com.tracker.coronavirustracker.utilities.ParseUtils;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -46,8 +47,8 @@ public class CoronaVirusDataService {
 
             locationStat.setState(record.get("Province/State"));
             locationStat.setCountry(record.get("Country/Region"));
-            int latestCases = Integer.parseInt(record.get(record.size()-1));
-            int previousDayCases = Integer.parseInt(record.get(record.size()-2));
+            int latestCases = ParseUtils.parseIntElseZero(record.get(record.size()-1));
+            int previousDayCases = ParseUtils.parseIntElseZero(record.get(record.size()-2));
             totalCases += latestCases;
             totalPreviousDaysCases += previousDayCases;
             locationStat.setNewestTotalCases(latestCases);
