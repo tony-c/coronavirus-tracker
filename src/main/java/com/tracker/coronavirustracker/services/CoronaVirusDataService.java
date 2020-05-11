@@ -19,7 +19,7 @@ import java.util.List;
 
 @Service
 public class CoronaVirusDataService {
-    private static final String VIRUS_DATA_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv";
+    private static final String VIRUS_DATA_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv";
     private List<LocationStats> allStats = new ArrayList<>();
     private int totalCases;
     private int totalPreviousDaysCases;
@@ -55,9 +55,7 @@ public class CoronaVirusDataService {
             locationStat.setDeltaPreviousDay(latestCases - previousDayCases);
             newStats.add(locationStat);
         }
-
-        System.out.println(totalCases);
-
+        
         for(LocationStats locationStat : newStats){
             double percentageOfTotal = ((double)locationStat.getNewestTotalCases() / totalCases) * 100.0;
             locationStat.setPercentageOfTotal(percentageOfTotal);
