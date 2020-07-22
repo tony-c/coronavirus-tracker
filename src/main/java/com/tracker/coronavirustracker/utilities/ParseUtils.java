@@ -7,7 +7,7 @@ public class ParseUtils {
         try {
             num = Integer.parseInt(toParse);
         }catch(Exception ignored){
-
+            // Ignore
         }
         return num;
     }

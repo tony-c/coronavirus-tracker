@@ -19,47 +19,57 @@ import java.util.List;
 
 @Service
 public class CoronaVirusDataService {
-    private static final String VIRUS_DATA_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv";
-    private List<LocationStats> allStats = new ArrayList<>();
-    private int totalCases;
-    private int totalPreviousDaysCases;
+  private static final String VIRUS_DATA_URL =
+      "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv";
+  private List<LocationStats> allStats = new ArrayList<>();
+  private int totalCases;
+  private int totalPreviousDaysCases;
 
-    public List<LocationStats> getAllStats() {
-        return allStats;
+  public List<LocationStats> getAllStats() {
+    return allStats;
+  }
+
+  public int getTotalCases() {
+    return totalCases;
+  }
+
+  public int getTotalPreviousDaysCases() {
+    return totalPreviousDaysCases;
+  }
+
+  @PostConstruct
+  @Scheduled(cron = "* * 1 * * *")
+  public void fetchVirusData() throws IOException, InterruptedException {
+    List<LocationStats> newStats = new ArrayList<>();
+    HttpResponse<String> httpResponse = getStringHttpResponse();
+    StringReader csvBodyReader = new StringReader(httpResponse.body());
+    Iterable<CSVRecord> records = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(csvBodyReader);
+
+    for (CSVRecord record : records) {
+      LocationStats locationStat = new LocationStats();
+
+      locationStat.setState(record.get("Province/State"));
+      locationStat.setCountry(record.get("Country/Region"));
+      int latestCases = ParseUtils.parseIntElseZero(record.get(record.size() - 1));
+      int previousDayCases = ParseUtils.parseIntElseZero(record.get(record.size() - 2));
+      totalCases += latestCases;
+      totalPreviousDaysCases += previousDayCases;
+      locationStat.setNewestTotalCases(latestCases);
+      locationStat.setDeltaPreviousDay(latestCases - previousDayCases);
+      newStats.add(locationStat);
     }
-    public int getTotalCases() { return totalCases; }
-    public int getTotalPreviousDaysCases() { return totalPreviousDaysCases; }
 
-    @PostConstruct
-    @Scheduled(cron = "* * 1 * * *")
-    public void fetchVirusData() throws IOException, InterruptedException {
-        List<LocationStats> newStats = new ArrayList<>();
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(VIRUS_DATA_URL))
-                .build();
-        HttpResponse<String> httpResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
-        StringReader csvBodyReader = new StringReader(httpResponse.body());
-        Iterable<CSVRecord> records = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(csvBodyReader);
+    newStats.forEach(stat ->{
+      double percentageOfTotal = ((double) stat.getNewestTotalCases() / totalCases) * 100.0;
+      stat.setPercentageOfTotal(percentageOfTotal);
+    });
 
-        for (CSVRecord record : records) {
-            LocationStats locationStat = new LocationStats();
+    this.allStats = newStats;
+  }
 
-            locationStat.setState(record.get("Province/State"));
-            locationStat.setCountry(record.get("Country/Region"));
-            int latestCases = ParseUtils.parseIntElseZero(record.get(record.size()-1));
-            int previousDayCases = ParseUtils.parseIntElseZero(record.get(record.size()-2));
-            totalCases += latestCases;
-            totalPreviousDaysCases += previousDayCases;
-            locationStat.setNewestTotalCases(latestCases);
-            locationStat.setDeltaPreviousDay(latestCases - previousDayCases);
-            newStats.add(locationStat);
-        }
-        
-        for(LocationStats locationStat : newStats){
-            double percentageOfTotal = ((double)locationStat.getNewestTotalCases() / totalCases) * 100.0;
-            locationStat.setPercentageOfTotal(percentageOfTotal);
-        }
-        this.allStats = newStats;
-    }
+  private HttpResponse<String> getStringHttpResponse() throws IOException, InterruptedException {
+    HttpClient client = HttpClient.newHttpClient();
+    HttpRequest request = HttpRequest.newBuilder(URI.create(VIRUS_DATA_URL)).build();
+    return client.send(request, HttpResponse.BodyHandlers.ofString());
+  }
 }
