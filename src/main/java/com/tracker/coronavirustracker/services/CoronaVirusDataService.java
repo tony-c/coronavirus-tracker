@@ -1,6 +1,6 @@
 package com.tracker.coronavirustracker.services;
 
-import com.tracker.coronavirustracker.models.LocationStats;
+import com.tracker.coronavirustracker.models.LocationData;
 import com.tracker.coronavirustracker.utilities.ParseUtils;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
@@ -21,11 +21,11 @@ import java.util.List;
 public class CoronaVirusDataService {
   private static final String VIRUS_DATA_URL =
       "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv";
-  private List<LocationStats> allStats = new ArrayList<>();
+  private List<LocationData> allStats = new ArrayList<>();
   private int totalCases;
   private int totalPreviousDaysCases;
 
-  public List<LocationStats> getAllStats() {
+  public List<LocationData> getAllStats() {
     return allStats;
   }
 
@@ -40,13 +40,13 @@ public class CoronaVirusDataService {
   @PostConstruct
   @Scheduled(cron = "* * 1 * * *")
   public void fetchVirusData() throws IOException, InterruptedException {
-    List<LocationStats> newStats = new ArrayList<>();
+    List<LocationData> newStats = new ArrayList<>();
     HttpResponse<String> httpResponse = getStringHttpResponse();
     StringReader csvBodyReader = new StringReader(httpResponse.body());
     Iterable<CSVRecord> records = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(csvBodyReader);
 
     for (CSVRecord record : records) {
-      LocationStats locationStat = new LocationStats();
+      LocationData locationStat = new LocationData();
 
       locationStat.setState(record.get("Province/State"));
       locationStat.setCountry(record.get("Country/Region"));

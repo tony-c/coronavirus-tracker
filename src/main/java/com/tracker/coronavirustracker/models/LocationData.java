@@ -1,6 +1,6 @@
 package com.tracker.coronavirustracker.models;
 
-public class LocationStats {
+public class LocationData {
     private String state;
     private String country;
     private int newestTotalCases;

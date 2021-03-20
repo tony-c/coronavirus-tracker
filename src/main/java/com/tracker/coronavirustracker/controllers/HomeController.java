@@ -1,6 +1,6 @@
 package com.tracker.coronavirustracker.controllers;
 
-import com.tracker.coronavirustracker.models.LocationStats;
+import com.tracker.coronavirustracker.models.LocationData;
 import com.tracker.coronavirustracker.services.CoronaVirusDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,7 +21,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String home(Model model) {
-        List<LocationStats> allStats = coronaVirusDataService.getAllStats();
+        List<LocationData> allStats = coronaVirusDataService.getAllStats();
 
         int totalReportedCases = coronaVirusDataService.getTotalCases();
         int totalNewCases = totalReportedCases - coronaVirusDataService.getTotalPreviousDaysCases();
