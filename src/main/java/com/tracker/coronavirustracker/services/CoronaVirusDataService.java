@@ -60,7 +60,7 @@ public class CoronaVirusDataService {
     }
 
     newStats.forEach(stat ->{
-      double percentageOfTotal = ((double) stat.getNewestTotalCases() / totalCases) * 100.0;
+      double percentageOfTotal = ((double) stat.getNewestTotalCases() / totalCases);
       stat.setPercentageOfTotal(percentageOfTotal);
     });
 
