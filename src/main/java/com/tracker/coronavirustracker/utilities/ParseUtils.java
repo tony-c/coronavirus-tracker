@@ -1,14 +1,18 @@
 package com.tracker.coronavirustracker.utilities;
 
-public class ParseUtils {
+public final class ParseUtils {
+
+    private ParseUtils() {
+    }
 
     public static int parseIntElseZero(String toParse){
-        int num = 0;
-        try {
-            num = Integer.parseInt(toParse);
-        }catch(Exception ignored){
-            // Ignore
+        if (toParse == null) {
+            return 0;
         }
-        return num;
+        try {
+            return Integer.parseInt(toParse.trim());
+        } catch (NumberFormatException ignored) {
+            return 0;
+        }
     }
 }

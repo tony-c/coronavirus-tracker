@@ -45,11 +45,12 @@ public class LocationData {
 
     @Override
     public String toString() {
-        return "LocationStats{" +
+        return "LocationData{" +
                 "state='" + state + '\'' +
                 ", country='" + country + '\'' +
                 ", newestTotalCases=" + newestTotalCases +
                 ", deltaPreviousDay=" + deltaPreviousDay +
+                ", percentageOfTotal=" + percentageOfTotal +
                 '}';
     }
 }
